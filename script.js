@@ -52,7 +52,7 @@ async function getWeather(lat, lon) {
             }
             document.getElementById("temperature").innerHTML = `${temperature} °C`;
             document.getElementById("wind").innerHTML = `${wind} Km/h`;
-            document.getElementById("precipitation").innerHTML = `${precipitation}`;
+            document.getElementById("precipitation").innerHTML = `${precipitation} mm`;
 
             if (precipitation > 0.2) {
                 document.getElementById("time").innerHTML = `rainy`;
