@@ -37,34 +37,31 @@ function initMap() {
 }
 
 async function getWeather(lat, lon) {
-    const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&hourly=precipitation`);
-    const json = await response.json();
-    
-    const temperature = json.current.temperature_2m;
-    console.log(json.hourly.precipitation)
-    const wind = json.current.wind_speed_10m;
-    document.getElementById("temperature").innerHTML = `${temperature} °C`;
-    document.getElementById("wind").innerHTML = `${wind} Km/h`;
-    document.getElementById("precipitation").innerHTML = `TBD`;
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,precipitation,is_day&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,is_day`)
+        .then (response => response.json())
+        .then (json => {
+            const temperature = json.current.temperature_2m;
+            const wind = json.current.wind_speed_10m;
+            let precipitation = json.hourly.precipitation.reduce((a, b) => a + b, 0);
+            const day = json.current.is_day;
+            precipitation = precipitation / precipitation / json.hourly.precipitation.length;
+            if (!isNaN(precipitation)) {
+                precipitation = Math.floor(precipitation*1000) / 1000;
+            } else {
+                precipitation = "TBD";
+            }
+            document.getElementById("temperature").innerHTML = `${temperature} °C`;
+            document.getElementById("wind").innerHTML = `${wind} Km/h`;
+            document.getElementById("precipitation").innerHTML = `${precipitation}`;
 
-    /* if (json.hourly.is_day == 1 ){
-        document.getElementById("time").innerHTML = `sunny`;
-    } else {
-        document.getElementById("time").innerHTML = `dark_mode`;
-    } */
-
-        let precipitation = json.hourly.precipitation.reduce((a, b) => a + b, 0)
-        precipitation = precipitation / precipitation.length
-
-    if (precipitation > 0 && json.hourly.is_day == 0) {
-        document.getElementById("time").innerHTML = `dark_mode`;
-    } else if (precipitation > 0 && json.hourly.is_day == 1) {
-        document.getElementById("time").innerHTML = `rainy`;
-    } else if (json.hourly.is_day == 1) {
-        document.getElementById("time").innerHTML = `sunny`;
-    } else {
-        document.getElementById("time").innerHTML = `dark_mode`;
-    }
+            if (precipitation > 0.2) {
+                document.getElementById("time").innerHTML = `rainy`;
+            } else if (precipitation <= 0.2 && day == 1) {
+                document.getElementById("time").innerHTML = `sunny`;
+            } else if (day == 0 ){
+                document.getElementById("time").innerHTML = `dark_mode`;
+            }
+        });
 }
 
 initMap();

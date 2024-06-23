@@ -52,6 +52,7 @@ body {
 .evaluated {
     display: grid;
     grid-template-columns: 1fr 5px 1fr 5px 1fr;
+    align-items: center;
 }
 
 
@@ -75,4 +76,33 @@ body {
 
 #weather-info {
     margin-top: 20px;
+}
+
+@media screen and (max-width: 705px) {
+    #title {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 530px) {
+    hr {
+        display: none;
+    }
+
+    .evaluated {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #wind {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    #temperature {
+        grid-column: 2;
+        grid-row: 2;
+    }
+    #precipitation {
+        grid-column: 2;
+        grid-row: 3;
+    }
 }
