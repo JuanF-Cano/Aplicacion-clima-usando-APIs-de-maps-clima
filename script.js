@@ -16,10 +16,6 @@ function initMap() {
 
     autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
-        if (!place.geometry) {
-            console.error(`"No hay detalles: '${place.name}'`);
-            return;
-        }
 
         map.setCenter(place.geometry.location);
         map.setZoom(10);
